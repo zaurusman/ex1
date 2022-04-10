@@ -1,6 +1,6 @@
 #include "RLEList.h"
 #include <stdlib.h>
-typedef struct {
+typedef struct RLEList_t{
     //TODO: check the name
     char letter;
     int count;
@@ -9,7 +9,7 @@ typedef struct {
 
 RLEList RLEListCreate(){
     RLEList new = (RLEList)malloc(sizeof(RLEList_t));
-    new.letter = '\0';
+    new->letter = '\0';
     if (!new){
         return NULL;
     }
