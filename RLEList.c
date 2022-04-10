@@ -1,8 +1,6 @@
 #include "RLEList.h"
 #include <stdlib.h>
-// this is a test
 typedef struct RLEList_t {
-    //TODO: check the name
     char letter;
     int count;
     struct RLEList_t* next;
@@ -20,6 +18,7 @@ RLEList RLEListCreate(){
 }
 
 void RLEListDestroy(RLEList list){
+    //TODO: Fix
     if (list){
         free(list);
     }
