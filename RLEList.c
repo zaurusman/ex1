@@ -47,7 +47,7 @@ RLEListResult RLEListAppend(RLEList list, char value){
 int RLEListSize(RLEList list)
 {
     int size=0;
-    if(!list){
+    if (!list){
         return -1;
     }
     while(list)
