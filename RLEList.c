@@ -1,5 +1,6 @@
 #include "RLEList.h"
 #include <stdlib.h>
+// this is a test
 typedef struct RLEList_t {
     //TODO: check the name
     char letter;
