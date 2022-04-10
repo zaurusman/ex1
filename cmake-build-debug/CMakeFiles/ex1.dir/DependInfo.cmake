@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "C:/Users/USER/ex1/RLEList.c" "C:/Users/USER/ex1/cmake-build-debug/CMakeFiles/ex1.dir/RLEList.c.obj"
-  "C:/Users/USER/ex1/tests/RLEList_example_test.c" "C:/Users/USER/ex1/cmake-build-debug/CMakeFiles/ex1.dir/tests/RLEList_example_test.c.obj"
+  "C:/Users/Yotam/CLionProjects/ex1/RLEList.c" "C:/Users/Yotam/CLionProjects/ex1/cmake-build-debug/CMakeFiles/ex1.dir/RLEList.c.obj"
+  "C:/Users/Yotam/CLionProjects/ex1/tests/RLEList_example_test.c" "C:/Users/Yotam/CLionProjects/ex1/cmake-build-debug/CMakeFiles/ex1.dir/tests/RLEList_example_test.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
