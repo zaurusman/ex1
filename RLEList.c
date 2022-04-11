@@ -112,9 +112,10 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
     return list->letter;
 }
 
-char* RLEListExportToString(RLEList list, RLEListResult* result){
-    if (list == NULL || *result == NULL){
-        if (*result != NULL){
+char* RLEListExportToString(RLEList list, RLEListResult* result)
+{
+    if (list == NULL || result == NULL){
+        if (result != NULL){
             *result = RLE_LIST_NULL_ARGUMENT;
         }
         return NULL;
@@ -127,11 +128,11 @@ char* RLEListExportToString(RLEList list, RLEListResult* result){
     }
     list = list->next;
     while(list) {
-        int occurences = list->count;
-        while (occurences > 0) {
-            strcat(str, list->letter);
+        int occurrences = list->count;
+        while (occurrences > 0) {
+            strcat(str, &list->letter);
             str++;
-            occurences--;
+            occurrences--;
         }
         list = list->next;
     }
@@ -139,7 +140,6 @@ char* RLEListExportToString(RLEList list, RLEListResult* result){
     str-=length;
     return str;
 }
-
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function)
 {
