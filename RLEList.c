@@ -9,7 +9,7 @@ typedef struct RLEList_t {
 } RLEList_t;
 
 RLEList RLEListCreate(){
-    RLEList new = (RLEList)malloc(sizeof(RLEList_t));
+    RLEList new = (RLEList)malloc(sizeof(*new));
     if (new==NULL){
         return NULL;
     }
@@ -62,53 +62,68 @@ int RLEListSize(RLEList list)
     return size;
 }
 //Returns the pointer to the node of the requested index
+//indexes start at 1
 //also decreases index, negative index means the next letters are the same, 0 means the next letter is different.
-static RLEList GoToIndex(RLEList list, int* index){ //Need to document, possibly in interface?
-    while (list && (*index)>0) {
-        *index = *index - (list->count);
-        list = list->next;
-    }
-    if (list == NULL){
-        return NULL;
-    }
-    else{
+static RLEList GoToIndex(RLEList list, int* index){
+    if (*index == 0){
         return list;
     }
+    list = list -> next;
+    while (list) {
+        *index = *index - (list->count);
+        if((*index)<=0){
+            break;
+        }
+        list = list->next;
+    }
+    return list;
 }
 
 RLEListResult RLEListRemove(RLEList list, int index)
 {
-    if(list==NULL||!index){
-        return RLE_LIST_NULL_ARGUMENT ;
+    if(list==NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
     }
-    index -= 1;
+    if(index<0)
+    {
+        return RLE_LIST_ERROR;
+    }
     RLEList previous = GoToIndex(list, &index);
     if ((previous == NULL) || (index == 0 && previous->next == NULL)){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-    list = (index == 0) ? list->next : previous;
-    (list->count)--;
-    if(list->count==0)
+    if (index == 0){
+        list = previous -> next;
+        list -> count--;
+        if (list->count == 0){
+            previous->next = list->next;
+            free(list);
+        }
+    }
+    else
     {
-        previous->next=list->next;
-        free(list);
+    previous->count--;
     }
     return RLE_LIST_SUCCESS;
 }
 
 char RLEListGet(RLEList list, int index, RLEListResult *result){
-    if (list == NULL || !index || result == NULL){
+    if (list == NULL){
         if (result != NULL){
             *result = RLE_LIST_NULL_ARGUMENT;
             }
         return 0;
     }
+    index++;
     list = GoToIndex(list, &index);
-    if(list == NULL){
+    if(list == NULL&&result!=NULL){
         *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
         return 0;
     }
-    *result = RLE_LIST_SUCCESS;
+    if(result!=NULL) {
+        *result = RLE_LIST_SUCCESS;
+    }
     return list->letter;
 }
 
