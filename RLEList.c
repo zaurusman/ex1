@@ -1,5 +1,6 @@
 #include "RLEList.h"
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct RLEList_t {
     //TODO: check the name
@@ -20,8 +21,10 @@ RLEList RLEListCreate(){
 }
 
 void RLEListDestroy(RLEList list){
-    if (list){
-        free(list);
+    while (list){
+        RLEList toBeDestroyed = list;
+        list = list -> next;
+        free(toBeDestroyed);
     }
 }
 RLEListResult RLEListAppend(RLEList list, char value){
@@ -58,7 +61,8 @@ int RLEListSize(RLEList list)
     }
     return size;
 }
-
+//Returns the pointer to the node of the requested index
+//also decreases index, negative index means the next letters are the same, 0 means the next letter is different.
 static RLEList GoToIndex(RLEList list, int* index){ //Need to document, possibly in interface?
     while (list && (*index)>0) {
         *index = *index - (list->count);
@@ -82,7 +86,7 @@ RLEListResult RLEListRemove(RLEList list, int index)
     if ((previous == NULL) || (index == 0 && previous->next == NULL)){
         return RLE_LIST_INDEX_OUT_OF_BOUNDS;
     }
-    list = (index == 0)? list->next : previous;
+    list = (index == 0) ? list->next : previous;
     (list->count)--;
     if(list->count==0)
     {
@@ -106,7 +110,35 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
     }
     *result = RLE_LIST_SUCCESS;
     return list->letter;
-
 }
+
+char* RLEListExportToString(RLEList list, RLEListResult* result){
+    if (list == NULL || *result == NULL){
+        if (*result != NULL){
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
+        return NULL;
+    }
+    int length = RLEListSize(list);
+    char* str = (char*)malloc(length+1);
+    if (str == NULL){
+        *result = RLE_LIST_OUT_OF_MEMORY;
+        return NULL;
+    }
+    list = list->next;
+    while(list) {
+        int occurences = list->count;
+        while (occurences > 0) {
+            strcat(str, list->letter);
+            str++;
+            occurences--;
+        }
+        list = list->next;
+    }
+    *str = '\0';
+    str-=length;
+    return str;
+}
+
 
 //implement the functions here
