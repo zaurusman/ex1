@@ -1,8 +1,7 @@
 #include "RLEList.h"
 #include <stdlib.h>
-//yotam's branch
+
 typedef struct RLEList_t {
-    //TODO: check the name
     char letter;
     int count;
     struct RLEList_t* next;
@@ -10,7 +9,7 @@ typedef struct RLEList_t {
 
 RLEList RLEListCreate(){
     RLEList new = (RLEList)malloc(sizeof(RLEList_t));
-    if (!new){
+    if (new==NULL){
         return NULL;
     }
     new -> letter = '\0';
@@ -25,10 +24,11 @@ void RLEListDestroy(RLEList list){
     }
 }
 RLEListResult RLEListAppend(RLEList list, char value){
-    if (list == NULL || value == NULL){
+    if (list == NULL || !value)
+    {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    while (!(list->next)){
+    while ((list->next)!=NULL){
         list = list->next;
     }
     if (list->letter == value){
@@ -36,19 +36,19 @@ RLEListResult RLEListAppend(RLEList list, char value){
     }
     else{
         list->next = RLEListCreate();
-        if (!(list->next)){
+        if ((list->next)==NULL){
             return RLE_LIST_OUT_OF_MEMORY;
         }
         list = list->next;
         list->letter = value;
-        (list->count)++;
-        return RLE_LIST_SUCCESS;
+        (list->count)=1;
     }
+    return RLE_LIST_SUCCESS;
 }
 int RLEListSize(RLEList list)
 {
     int size=0;
-    if (!list){
+    if (list==NULL){
         return -1;
     }
     while(list)
@@ -59,27 +59,68 @@ int RLEListSize(RLEList list)
     return size;
 }
 
-RLEListResult RLEListRemove(RLEList list, int index)
-{
-    if(!list||!index){
-        return RLE_LIST_NULL_ARGUMENT ;
-    }
-    RLEList previous = list;
-    while (list)
-    {
-        index = index-(list->count);
-        if(index<=0&&list->count!=0){
-            (list->count)--;
-            if(list->count==0)
-            {
-                previous->next=list->next;
-                free(list);
-            }
-            return RLE_LIST_SUCCESS;
-        }
-        previous =list;
+static RLEList GoToIndex(RLEList list, int* index){ //Need to document, possibly in interface?
+    while (list && (*index)>0) {
+        *index = *index - (list->count);
         list = list->next;
     }
-    return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    if (list == NULL){
+        return NULL;
+    }
+    else{
+        return list;
+    }
 }
+
+RLEListResult RLEListRemove(RLEList list, int index)
+{
+    if(list==NULL||!index){
+        return RLE_LIST_NULL_ARGUMENT ;
+    }
+    index -= 1;
+    RLEList previous = GoToIndex(list, &index);
+    if ((previous == NULL) || (index == 0 && previous->next == NULL)){
+        return RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
+    list = (index == 0)? list->next : previous;
+    (list->count)--;
+    if(list->count==0)
+    {
+        previous->next=list->next;
+        free(list);
+    }
+    return RLE_LIST_SUCCESS;
+}
+
+char RLEListGet(RLEList list, int index, RLEListResult *result){
+    if (list == NULL || !index || result == NULL){
+        if (result != NULL){
+            *result = RLE_LIST_NULL_ARGUMENT;
+            }
+        return 0;
+    }
+    list = GoToIndex(list, &index);
+    if(list == NULL){
+        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+        return 0;
+    }
+    *result = RLE_LIST_SUCCESS;
+    return list->letter;
+
+}
+
+RLEListResult RLEListMap(RLEList list, MapFunction map_function)
+{
+    if(list==NULL || map_function==NULL)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
+    while(list)
+    {
+        list->letter = map_function(list->letter);
+        list = list->next;
+    }
+    return RLE_LIST_SUCCESS;
+}
+
 //implement the functions here
