@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define SPACE_PER_LETTER 2
 typedef struct RLEList_t {
     char letter;
     int count;
@@ -129,30 +130,34 @@ char RLEListGet(RLEList list, int index, RLEListResult *result){
 
 char* RLEListExportToString(RLEList list, RLEListResult* result)
 {
-    if (list == NULL || result == NULL){
+    if (list == NULL || result == NULL || list->next == NULL){
         if (result != NULL){
             *result = RLE_LIST_NULL_ARGUMENT;
         }
         return NULL;
     }
-    int length = RLEListSize(list);
-    char* str = (char*)malloc(length+1);
+    int letter_count = 0;
+    char* str = (char*)malloc(sizeof('\0'));
     if (str == NULL){
         *result = RLE_LIST_OUT_OF_MEMORY;
         return NULL;
     }
-    list = list->next;
-    while(list) {
-        int occurrences = list->count;
-        while (occurrences > 0) {
-            strcat(str, &list->letter);
-            str++;
-            occurrences--;
+    while (list->next != NULL) {
+        letter_count++;
+        str = (char*)realloc(str, sizeof(str)+SPACE_PER_LETTER);
+        if(str == NULL){
+            *result = RLE_LIST_OUT_OF_MEMORY;
+            return NULL;
         }
-        list = list->next;
+        list = list -> next;
+        strcat(str, &list->letter);
+        char count = (char)list->count; //doesn't work for numbers higher than 9, fix.
+        strcat(str+1, &count);
+        str+=SPACE_PER_LETTER;
     }
+    str++;
     *str = '\0';
-    str-=length;
+    str-=letter_count*SPACE_PER_LETTER;
     return str;
 }
 

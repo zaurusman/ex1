@@ -127,7 +127,7 @@ char RLEListGet(RLEList list, int index, RLEListResult *result);
 * @param list - The RLE list to be exported as a string.
 * @param result - Pointer to be used to store the result of the operation, if it is NULL, the result will not be saved.
 * 	RLE_LIST_NULL_ARGUMENT if a NULL was sent to the function as list.
-* 	LIST_SUCCESS the RLE list has been successfuly exported as a string.
+* 	LIST_SUCCESS the RLE list has been successfully exported as a string.
 * @return
 * 	NULL if result is not RLE_LIST_SUCCESS.
 * 	The string that corresponds to the received RLE list.
