@@ -3,6 +3,9 @@
 #include <string.h>
 
 #define SPACE_PER_LETTER 2
+#define MAX_INT_LOG_TEN 11
+#define BASE_TEN 10
+
 typedef struct RLEList_t {
     char letter;
     int count;
@@ -173,5 +176,16 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
         list = list->next;
     }
     return RLE_LIST_SUCCESS;
+}
+
+static char* GetNumberString(int number, char *str){
+    char remainder;
+    while (number % BASE_TEN > 0){
+        remainder = '0' + (number % BASE_TEN);
+        number /= BASE_TEN;
+        strcat(str, &remainder);
+        str++;
+    }
+    *str = '\0';
 }
 
