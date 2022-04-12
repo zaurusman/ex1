@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SPACE_PER_LETTER 2
+#define SPACE_PER_LETTER 4
 #define MAX_INT_LOG_TEN 11
 #define BASE_TEN 10
 
@@ -139,6 +139,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result)
         }
         return NULL;
     }
+    char amountString[MAX_INT_LOG_TEN];
     int letter_count = 0;
     char* str = (char*)malloc(sizeof('\0'));
     if (str == NULL){
@@ -177,7 +178,16 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function)
     }
     return RLE_LIST_SUCCESS;
 }
-
+static int getStringLength(RLEList list){
+    int count = 1;
+    while (list != NULL){
+        count+=SPACE_PER_LETTER;
+        for (int i = list->count; i > 0; i/=BASE_TEN) {
+            count++;
+        }
+    }
+    return count;
+}
 static char* GetNumberString(int number, char *str){
     char remainder;
     while (number % BASE_TEN > 0){
